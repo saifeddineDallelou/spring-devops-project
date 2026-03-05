@@ -46,6 +46,33 @@ pipeline {
                 sh 'docker push dallelou/spring-devops:1.0'
             }
         }
+	stage('Run MySQL and Spring App') {
+ 	   steps {
+       	        sh '''
+         	 # Stop / remove old containers if they exist
+         	 docker rm -f mysql || true
+         	 docker rm -f student-app || true
+
+         	 # Start MySQL
+         	 docker run -d --name mysql \
+           	 -e MYSQL_ROOT_PASSWORD=Root@123 \
+           	 -e MYSQL_DATABASE=studentdb \
+           	 -p 3306:3306 \
+           	 mysql:latest
+
+	         # Start Spring Boot app, linked to MySQL
+         	 docker run -d --name student-app \
+           	 --link mysql:mysql \
+           	 -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/studentdb \
+           	 -e SPRING_DATASOURCE_USERNAME=root \
+           	 -e SPRING_DATASOURCE_PASSWORD=Root@123 \
+           	 -p 8081:8080 \
+           	 student-app:latest
+       		 '''
+   		 }
+	}
+	
+
 
     }
 }
