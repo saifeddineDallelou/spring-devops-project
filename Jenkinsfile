@@ -8,6 +8,11 @@ pipeline {
 
     stages {
 
+	stage('Clean workspace') {
+	  steps {
+	    cleanWs()
+	  }
+	}
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
@@ -32,13 +37,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t asgard69/spring-devops:1.0 .'
+                sh 'docker build -t dallelou/spring-devops:1.0 .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker push asgard69/spring-devops:1.0'
+                sh 'docker push dallelou/spring-devops:1.0'
             }
         }
 
